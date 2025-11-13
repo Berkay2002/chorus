@@ -31,7 +31,7 @@ export function MessageInput({ channelId }: { channelId: string }) {
     setSending(true)
     const messageContent = content.trim()
     
-    // Optimistic update
+    // Optimistic update with profile data
     const tempId = `temp-${Date.now()}`
     addMessage(channelId, {
       id: tempId,
@@ -42,6 +42,11 @@ export function MessageInput({ channelId }: { channelId: string }) {
       embedding: null,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
+      profiles: {
+        username: 'You',
+        avatar_url: null,
+        display_name: 'You',
+      },
     })
 
     setContent('')

@@ -3,43 +3,49 @@
 import { useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useChatStore } from '@/store/use-chat-store'
-import { Message } from '@/types'
+import { MessageWithProfile } from '@/types'
 
 export function useMessages(channelId: string) {
   const { setMessages, addMessage } = useChatStore()
   const supabase = createClient()
 
-  // Load initial messages
+  // Load initial messages (last 50) with profile data
   useEffect(() => {
     async function loadMessages() {
       const { data } = await supabase
         .from('messages')
-        .select('*')
+        .select('*, profiles(username, avatar_url, display_name)')
         .eq('channel_id', channelId)
-        .order('created_at', { ascending: true })
+        .order('created_at', { ascending: false })
+        .limit(50)
 
       if (data) {
-        setMessages(channelId, data)
+        // Reverse to show oldest first
+        setMessages(channelId, data.reverse() as MessageWithProfile[])
       }
     }
 
     loadMessages()
   }, [channelId, setMessages, supabase])
 
-  // Subscribe to realtime updates for new messages in this channel
+  // Subscribe to Broadcast channel for realtime messages
   useEffect(() => {
     const channel = supabase
-      .channel(`messages:${channelId}`)
+      .channel(`broadcast:channel:${channelId}`)
       .on(
-        'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'messages',
-          filter: `channel_id=eq.${channelId}`,
-        },
-        (payload) => {
-          addMessage(channelId, payload.new as Message)
+        'broadcast',
+        { event: 'message' },
+        async (payload) => {
+          // Fetch the full message with profile data
+          const { data: message } = await supabase
+            .from('messages')
+            .select('*, profiles(username, avatar_url, display_name)')
+            .eq('id', payload.payload.messageId)
+            .single()
+          
+          if (message) {
+            addMessage(channelId, message as MessageWithProfile)
+          }
         }
       )
       .subscribe()

@@ -1,14 +1,12 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
-import { Database } from '@/types/database'
-
-type Message = Database['public']['Tables']['messages']['Row']
+import { MessageWithProfile } from '@/types'
 
 interface ChatStore {
-  messages: Record<string, Message[]> // channelId -> messages
-  addMessage: (channelId: string, message: Message) => void
-  setMessages: (channelId: string, messages: Message[]) => void
-  updateMessage: (channelId: string, messageId: string, updates: Partial<Message>) => void
+  messages: Record<string, MessageWithProfile[]> // channelId -> messages
+  addMessage: (channelId: string, message: MessageWithProfile) => void
+  setMessages: (channelId: string, messages: MessageWithProfile[]) => void
+  updateMessage: (channelId: string, messageId: string, updates: Partial<MessageWithProfile>) => void
   deleteMessage: (channelId: string, messageId: string) => void
   clearChannel: (channelId: string) => void
 }
