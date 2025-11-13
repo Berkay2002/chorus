@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Message } from '@/types/database'
+import { Message } from '@/types'
 
 export function useSemanticSearch() {
   const [results, setResults] = useState<Message[]>([])

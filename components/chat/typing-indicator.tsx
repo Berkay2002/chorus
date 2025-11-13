@@ -1,9 +1,11 @@
 'use client'
 
 import { useTypingIndicator } from '@/lib/realtime/hooks'
+import { useUserStore } from '@/store/use-user-store'
 
 export function TypingIndicator({ channelId }: { channelId: string }) {
-  const { typingUsers } = useTypingIndicator(channelId)
+  const user = useUserStore((state) => state.user)
+  const { typingUsers } = useTypingIndicator(channelId, user?.id || 'anonymous')
 
   if (typingUsers.length === 0) return null
 

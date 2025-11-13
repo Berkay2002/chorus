@@ -10,11 +10,14 @@ export function MarkdownRenderer({ content }: { content: string }) {
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
       components={{
-        code({ node, inline, className, children, ...props }) {
+        code({ className, children, ...props }) {
           const match = /language-(\w+)/.exec(className || '')
           const language = match ? match[1] : ''
+          
+          // Check if it's inline code by checking if there's no language class
+          const isInline = !className
 
-          if (inline) {
+          if (isInline) {
             return (
               <code className="bg-muted px-1 py-0.5 rounded text-xs" {...props}>
                 {children}

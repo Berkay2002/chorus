@@ -1,10 +1,10 @@
-import { Message } from './database'
+import { Tables } from './database'
 
 export type BroadcastEvent = 'message' | 'typing' | 'presence'
 
 export interface MessageBroadcast {
   type: 'message'
-  payload: Message
+  payload: Tables<'messages'>
 }
 
 export interface TypingBroadcast {

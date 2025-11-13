@@ -1,5 +1,5 @@
 import { semanticSearch } from '@/lib/search/semantic'
-import { Message } from '@/types/database'
+import { Message } from '@/types'
 
 const SHORT_TERM_MEMORY_SIZE = 10
 const MID_TERM_MEMORY_SIZE = 5

@@ -4,7 +4,7 @@ import { generateEmbedding } from '@/lib/ai/embeddings'
 
 export async function POST(req: NextRequest) {
   try {
-    const supabase = createClient()
+    const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) {
@@ -16,11 +16,11 @@ export async function POST(req: NextRequest) {
     // Generate embedding
     const embedding = await generateEmbedding(text)
 
-    // Update message with embedding
+    // Update message with embedding (convert to string for pgvector)
     if (messageId) {
       await supabase
         .from('messages')
-        .update({ embedding })
+        .update({ embedding: JSON.stringify(embedding) })
         .eq('id', messageId)
     }
 

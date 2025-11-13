@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { Channel } from '@/types/database'
+import { Channel } from '@/types'
 
 export function useChannels(serverId: string) {
   const [channels, setChannels] = useState<Channel[]>([])

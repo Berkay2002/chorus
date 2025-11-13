@@ -1,6 +1,8 @@
 'use client'
 
-import { Message } from '@/types/database'
+import React from 'react'
+import { formatDistanceToNow } from 'date-fns'
+import { Message } from '@/types'
 import { MarkdownRenderer } from '@/components/markdown/markdown-renderer'
 import { formatMessageTime } from '@/lib/utils/date'
 import { Avatar } from '@/components/ui/avatar'

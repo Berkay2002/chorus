@@ -3,7 +3,7 @@
 import { useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useChatStore } from '@/store/use-chat-store'
-import { useChannel } from '@/lib/realtime/hooks'
+import { Message } from '@/types'
 
 export function useMessages(channelId: string) {
   const { setMessages, addMessage } = useChatStore()
@@ -26,10 +26,26 @@ export function useMessages(channelId: string) {
     loadMessages()
   }, [channelId, setMessages, supabase])
 
-  // Subscribe to realtime updates
-  useChannel(channelId, {
-    onMessage: (message) => {
-      addMessage(channelId, message)
-    },
-  })
+  // Subscribe to realtime updates for new messages in this channel
+  useEffect(() => {
+    const channel = supabase
+      .channel(`messages:${channelId}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'messages',
+          filter: `channel_id=eq.${channelId}`,
+        },
+        (payload) => {
+          addMessage(channelId, payload.new as Message)
+        }
+      )
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(channel)
+    }
+  }, [channelId, addMessage, supabase])
 }
