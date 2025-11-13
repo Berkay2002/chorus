@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { SignupForm } from '@/components/auth/signup-form'
 
 export default function SignupPage() {
@@ -8,7 +9,9 @@ export default function SignupPage() {
           <h1 className="text-3xl font-bold">Create an account</h1>
           <p className="mt-2 text-muted-foreground">Join the conversation</p>
         </div>
-        <SignupForm />
+        <Suspense fallback={<div>Loading...</div>}>
+          <SignupForm />
+        </Suspense>
       </div>
     </div>
   )

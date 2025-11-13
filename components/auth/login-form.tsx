@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { createClient } from '@/lib/supabase/client'
+import { toast } from 'sonner'
 
 export function LoginForm() {
   const router = useRouter()
@@ -16,20 +16,28 @@ export function LoginForm() {
     e.preventDefault()
     setLoading(true)
 
-    const supabase = createClient()
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
+    try {
+      const response = await fetch('/api/auth/signin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      })
 
-    if (error) {
+      const result = await response.json()
+
+      if (result.error) {
+        toast.error(result.error)
+      } else {
+        toast.success('Signed in successfully')
+        router.push('/servers')
+        router.refresh()
+      }
+    } catch (error) {
       console.error('Login error:', error)
-      // TODO: Show error toast
-    } else {
-      router.push('/servers')
+      toast.error('Failed to sign in')
+    } finally {
+      setLoading(false)
     }
-
-    setLoading(false)
   }
 
   return (

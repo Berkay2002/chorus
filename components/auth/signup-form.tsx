@@ -1,13 +1,15 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { createClient } from '@/lib/supabase/client'
+import { toast } from 'sonner'
 
 export function SignupForm() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const inviteCode = searchParams.get('invite')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [username, setUsername] = useState('')
@@ -17,25 +19,47 @@ export function SignupForm() {
     e.preventDefault()
     setLoading(true)
 
-    const supabase = createClient()
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          username,
-        },
-      },
-    })
+    try {
+      const response = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password, username }),
+      })
 
-    if (error) {
+      const result = await response.json()
+
+      if (result.error) {
+        toast.error(result.error)
+      } else {
+        toast.success('Account created successfully')
+        
+        // If there's an invite code, join the server
+        if (inviteCode) {
+          try {
+            const joinResponse = await fetch(`/api/servers/join/${inviteCode}`, {
+              method: 'POST',
+            })
+            const joinResult = await joinResponse.json()
+            
+            if (joinResult.data?.server) {
+              router.push(`/servers/${joinResult.data.server.id}`)
+              router.refresh()
+              return
+            }
+          } catch (err) {
+            console.error('Error joining server:', err)
+          }
+        }
+        
+        router.push('/servers')
+        router.refresh()
+      }
+    } catch (error) {
       console.error('Signup error:', error)
-      // TODO: Show error toast
-    } else {
-      router.push('/servers')
+      toast.error('Failed to create account')
+    } finally {
+      setLoading(false)
     }
-
-    setLoading(false)
   }
 
   return (

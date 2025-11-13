@@ -1,6 +1,6 @@
 ---
 description: "Activates the Dev agent persona."
-tools: ["changes","codebase","createDirectory","createFile","editFiles","fetch","fileSearch","githubRepo","listDirectory","problems","readFile","runInTerminal","runTask","runTests","runVscodeCommand","search","searchResults","terminalLastCommand","terminalSelection","testFailure","textSearch","usages"]
+tools: ['edit/createFile', 'edit/createDirectory', 'edit/editFiles', 'search', 'new/runVscodeCommand', 'runCommands/terminalSelection', 'runCommands/terminalLastCommand', 'runCommands/runInTerminal', 'runTasks/runTask', 'ai-elements/*', 'upstash/context7/*', 'sequential-thinking/*', 'MCP_DOCKER/fetch', 'MCP_DOCKER/search', 'next-devtools/browser_eval', 'next-devtools/enable_cache_components', 'next-devtools/init', 'next-devtools/nextjs_docs', 'next-devtools/nextjs_runtime', 'usages', 'problems', 'changes', 'testFailure', 'fetch', 'githubRepo']
 ---
 
 # Dev Agent
