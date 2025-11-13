@@ -18,24 +18,30 @@ export type Database = {
         Row: {
           agents_md: string | null
           created_at: string
+          description: string | null
           id: string
           name: string
+          position: number | null
           server_id: string
           updated_at: string
         }
         Insert: {
           agents_md?: string | null
           created_at?: string
+          description?: string | null
           id?: string
           name: string
+          position?: number | null
           server_id: string
           updated_at?: string
         }
         Update: {
           agents_md?: string | null
           created_at?: string
+          description?: string | null
           id?: string
           name?: string
+          position?: number | null
           server_id?: string
           updated_at?: string
         }
@@ -101,6 +107,7 @@ export type Database = {
         Row: {
           avatar_url: string | null
           created_at: string
+          display_name: string | null
           id: string
           updated_at: string
           username: string
@@ -108,6 +115,7 @@ export type Database = {
         Insert: {
           avatar_url?: string | null
           created_at?: string
+          display_name?: string | null
           id: string
           updated_at?: string
           username: string
@@ -115,6 +123,7 @@ export type Database = {
         Update: {
           avatar_url?: string | null
           created_at?: string
+          display_name?: string | null
           id?: string
           updated_at?: string
           username?: string
@@ -124,16 +133,19 @@ export type Database = {
       server_members: {
         Row: {
           joined_at: string
+          role: Database["public"]["Enums"]["server_member_role"]
           server_id: string
           user_id: string
         }
         Insert: {
           joined_at?: string
+          role?: Database["public"]["Enums"]["server_member_role"]
           server_id: string
           user_id: string
         }
         Update: {
           joined_at?: string
+          role?: Database["public"]["Enums"]["server_member_role"]
           server_id?: string
           user_id?: string
         }
@@ -157,6 +169,8 @@ export type Database = {
       servers: {
         Row: {
           created_at: string
+          description: string | null
+          icon_url: string | null
           id: string
           invite_code: string
           name: string
@@ -165,6 +179,8 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          description?: string | null
+          icon_url?: string | null
           id?: string
           invite_code?: string
           name: string
@@ -173,6 +189,8 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          description?: string | null
+          icon_url?: string | null
           id?: string
           invite_code?: string
           name?: string
@@ -194,6 +212,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      generate_invite_code: { Args: never; Returns: string }
       match_messages: {
         Args: {
           channel_filter?: string
@@ -213,7 +232,7 @@ export type Database = {
       }
     }
     Enums: {
-      [_ in never]: never
+      server_member_role: "owner" | "admin" | "member"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -340,6 +359,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      server_member_role: ["owner", "admin", "member"],
+    },
   },
 } as const
